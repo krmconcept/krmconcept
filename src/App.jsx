@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
@@ -6,6 +7,8 @@ import Navigation from './components/Navigation'
 import Footer from './components/Footer'
 import CursorEffect from './components/CursorEffect'
 import GrainOverlay from './components/GrainOverlay'
+import LoadingScreen from './components/LoadingScreen'
+import ScanLines from './components/ScanLines'
 
 import HomePage from './pages/HomePage'
 import PortfolioPage from './pages/PortfolioPage'
@@ -26,14 +29,13 @@ function ScrollToTop() {
 }
 
 const pageVariants = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  initial: { opacity: 0, y: 18, filter: 'blur(4px)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
+  exit:    { opacity: 0, y: -8, filter: 'blur(2px)' },
 }
 
 function AnimatedRoutes() {
   const location = useLocation()
-
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -42,7 +44,7 @@ function AnimatedRoutes() {
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <Routes location={location}>
           <Route path="/" element={<HomePage />} />
@@ -61,16 +63,27 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const [loaded, setLoaded] = useState(false)
+
   return (
-    <HashRouter>
-      <ScrollToTop />
-      <CursorEffect />
-      <GrainOverlay />
-      <Navigation />
-      <main>
-        <AnimatedRoutes />
-      </main>
-      <Footer />
-    </HashRouter>
+    <>
+      <AnimatePresence>
+        {!loaded && <LoadingScreen onComplete={() => setLoaded(true)} />}
+      </AnimatePresence>
+
+      {loaded && (
+        <HashRouter>
+          <ScrollToTop />
+          <CursorEffect />
+          <GrainOverlay />
+          <ScanLines />
+          <Navigation />
+          <main>
+            <AnimatedRoutes />
+          </main>
+          <Footer />
+        </HashRouter>
+      )}
+    </>
   )
 }

@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 import ScrollReveal from '../components/ScrollReveal'
 import MagneticButton from '../components/MagneticButton'
 import SEOHead from '../components/SEOHead'
+import TextScramble from '../components/TextScramble'
+import TiltCard from '../components/TiltCard'
 
 const oneTime = [
   {
@@ -114,16 +116,32 @@ const faqs = [
 
 function PricingCard({ plan }) {
   return (
-    <div className={`pricing-card p-8 flex flex-col h-full ${plan.featured ? 'featured' : ''}`}>
+    <TiltCard maxTilt={7} className="h-full">
+    <div className={`pricing-card p-8 flex flex-col h-full ${plan.featured ? 'featured' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Animated corner accent */}
+      {plan.featured && (
+        <motion.div
+          className="absolute top-0 right-0 w-24 h-24 pointer-events-none"
+          style={{ background: 'radial-gradient(circle at top right, rgba(200,169,110,0.15), transparent 70%)' }}
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        />
+      )}
+      {/* Scan line on featured */}
+      {plan.featured && (
+        <motion.div
+          className="absolute left-0 right-0 h-px pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(200,169,110,0.4), transparent)' }}
+          animate={{ top: ['0%', '100%'] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+        />
+      )}
+
       {plan.badge && (
         <div className="mb-6">
           <span
             className="font-mono text-xs tracking-widest uppercase px-3 py-1"
-            style={{
-              background: 'rgba(200,169,110,0.1)',
-              color: 'var(--accent-primary)',
-              border: '1px solid rgba(200,169,110,0.3)',
-            }}
+            style={{ background: 'rgba(200,169,110,0.1)', color: 'var(--accent-primary)', border: '1px solid rgba(200,169,110,0.3)' }}
           >
             {plan.badge}
           </span>
@@ -162,6 +180,7 @@ function PricingCard({ plan }) {
         Démarrer <ArrowRight size={15} />
       </Link>
     </div>
+    </TiltCard>
   )
 }
 
@@ -219,7 +238,7 @@ export default function ServicesPage() {
           <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
             <ScrollReveal variant="fadeUp">
               <p className="font-mono text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--accent-primary)' }}>
-                Services & Tarifs
+                <TextScramble text="// SERVICES & TARIFS" duration={900} />
               </p>
               <h1 className="font-display" style={{ fontSize: 'clamp(2.8rem, 7vw, 7rem)', color: 'var(--text-primary)', lineHeight: 0.95 }}>
                 Des sites web{' '}
